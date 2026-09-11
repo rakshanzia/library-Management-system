@@ -11,7 +11,7 @@ def load_books():
             reader = csv.DictReader(file)
             for row in reader:  # LOOP
                 book = {  # DICTIONARY
-                    "id": int(row["id"]),
+                    "id": int(row["id"]), 
                     "name": row["name"],
                     "author": row["author"],
                     "category": int(row["category"]),
