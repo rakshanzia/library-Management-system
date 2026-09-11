@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Library Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>📚 Library Management System</h1>
+
+    <p>Manage Books Easily</p>
+
+</header>
+
+
+<!-- NAVIGATION -->
+
+<nav>
+
+    <a href="/">Home</a>
+
+    <a href="#add">Add Book</a>
+
+    <a href="#search">Search</a>
+
+    <a href="#issue">Issue Book</a>
+
+    <a href="#return">Return Book</a>
+
+    <a href="#summary">Summary</a>
+
+</nav>
+
+
+
+<div class="container">
+
+
+<!-- DASHBOARD -->
+
+<section>
+
+    <h2>Library Statistics</h2>
+
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <h3>Total Books</h3>
+
+            <p>{{ total_books }}</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Available Books</h3>
+
+            <p>{{ available_books }}</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Issued Books</h3>
+
+            <p>{{ issued_books }}</p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ADD BOOK -->
+
+<section id="add">
+
+    <h2>➕ Add New Book</h2>
+
+
+    <form action="/add_book" method="POST">
+
+
+        <label>Book Title</label>
+
+        <input
+            type="text"
+            name="title"
+            placeholder="Enter book title"
+            required
+        >
+
+
+        <label>Author</label>
+
+        <input
+            type="text"
+            name="author"
+            placeholder="Enter author name"
+            required
+        >
+
+
+        <label>Category</label>
+
+        <select name="category" required>
+
+            <option value="">Select Category</option>
+
+            <option value="Programming">
+                Programming
+            </option>
+
+            <option value="Database">
+                Database
+            </option>
+
+            <option value="Computer Science">
+                Computer Science
+            </option>
+
+            <option value="Mathematics">
+                Mathematics
+            </option>
+
+            <option value="English">
+                English
+            </option>
+
+        </select>
+
+
+        <button type="submit">
+            Add Book
+        </button>
+
+
+    </form>
+
+</section>
+
+
+
+<!-- SEARCH -->
+
+<section id="search">
+
+    <h2>🔍 Search Book</h2>
+
+
+    <form action="/search" method="GET">
+
+        <input
+            type="text"
+            name="keyword"
+            placeholder="Search by title, author or category"
+            required
+        >
+
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+
+</section>
+
+
+
+<!-- BOOK TABLE -->
+
+<section>
+
+    <h2>📚 All Books</h2>
+
+
+    {% if message %}
+
+        <p class="message">
+            {{ message }}
+        </p>
+
+    {% endif %}
+
+
+    <table>
+
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Book</th>
+
+            <th>Author</th>
+
+            <th>Category</th>
+
+            <th>Status</th>
+
+            <th>Student</th>
+
+            <th>Delete</th>
+
+        </tr>
+
+
+        {% for book in books %}
+
+
+        <tr>
+
+            <td>
+                {{ book.id }}
+            </td>
+
+
+            <td>
+                {{ book.title }}
+            </td>
+
+
+            <td>
+                {{ book.author }}
+            </td>
+
+
+            <td>
+                {{ book.category }}
+            </td>
+
+
+            <td>
+
+                {% if book.status == "Available" %}
+
+                    <span class="available">
+                        Available
+                    </span>
+
+                {% else %}
+
+                    <span class="issued">
+                        Issued
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+
+            <td>
+                {{ book.student }}
+            </td>
+
+
+            <td>
+
+                <a
+                    class="delete"
+                    href="/delete/{{ book.id }}"
+                    onclick="return confirm('Delete this book?')"
+                >
+                    Delete
+                </a>
+
+            </td>
+
+
+        </tr>
+
+
+        {% else %}
+
+
+        <tr>
+
+            <td colspan="7">
+
+                No books found.
+
+            </td>
+
+        </tr>
+
+
+        {% endfor %}
+
+
+    </table>
+
+
+</section>
+
+
+
+<!-- ISSUE BOOK -->
+
+<section id="issue">
+
+    <h2>📤 Issue Book</h2>
+
+
+    <form action="/issue_book" method="POST">
+
+
+        <label>Book ID</label>
+
+        <input
+            type="number"
+            name="book_id"
+            placeholder="Enter Book ID"
+            required
+        >
+
+
+        <label>Student Name</label>
+
+        <input
+            type="text"
+            name="student"
+            placeholder="Enter student name"
+            required
+        >
+
+
+        <button type="submit">
+            Issue Book
+        </button>
+
+
+    </form>
+
+
+</section>
+
+
+
+<!-- RETURN BOOK -->
+
+<section id="return">
+
+    <h2>📥 Return Book</h2>
+
+
+    <form action="/return_book" method="POST">
+
+
+        <label>Book ID</label>
+
+        <input
+            type="number"
+            name="book_id"
+            placeholder="Enter Book ID"
+            required
+        >
+
+
+        <button type="submit">
+            Return Book
+        </button>
+
+
+    </form>
+
+
+</section>
+
+
+
+<!-- CATEGORY SUMMARY -->
+
+<section id="summary">
+
+    <h2>📊 Category-wise Summary</h2>
+
+
+    <a class="summary-button" href="/summary">
+
+        View Category Summary
+
+    </a>
+
+
+    <div class="summary-list">
+
+
+        {% for category, count in categories.items() %}
+
+            <div class="summary-item">
+
+                <strong>
+                    {{ category }}
+                </strong>
+
+                <span>
+                    {{ count }} Books
+                </span>
+
+            </div>
+
+        {% else %}
+
+            <p>No categories available.</p>
+
+        {% endfor %}
+
+
+    </div>
+
+
+</section>
+
+
+</div>
+
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        Library Management System © 2026
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
